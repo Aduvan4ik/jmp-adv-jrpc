@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+package com.jmp.task1.proto;
+
+option java_package = "com.jmp.task1.proto";
+option java_multiple_files = true;
+
+
+service PingPongService{
+  rpc getResponse(PingRequest) returns (PongResponse);
+}
+
+message PingRequest{
+  string message = 1;
+  google.protobuf.Timestamp request_date = 2;
+}
+
+message PongResponse{
+  string message = 1;
+  google.protobuf.Timestamp response_date = 2;
+}
