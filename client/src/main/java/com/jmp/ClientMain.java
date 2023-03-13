@@ -20,6 +20,7 @@ public class ClientMain {
 
         PingPongClient pingPongClient = new PingPongClient(channel);
         pingPongClient.getResponse();
+        pingPongClient.getMultipleResponses();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("Clean channel shutdown in case JVM was shutdown");

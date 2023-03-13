@@ -7,16 +7,17 @@ option java_package = "com.jmp.task1.proto";
 option java_multiple_files = true;
 
 
-service PingPongService{
+service PingPongService {
   rpc getResponse(PingRequest) returns (PongResponse);
+  rpc getMultipleResponses(PingRequest) returns (stream PongResponse);
 }
 
-message PingRequest{
+message PingRequest {
   string message = 1;
   google.protobuf.Timestamp request_date = 2;
 }
 
-message PongResponse{
+message PongResponse {
   string message = 1;
   google.protobuf.Timestamp response_date = 2;
 }

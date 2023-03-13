@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.Iterator;
 
 public class PingPongClient {
     private static final Logger logger = LoggerFactory.getLogger(PingPongClient.class);
@@ -20,21 +21,39 @@ public class PingPongClient {
     }
 
     public void getResponse() {
+        PingRequest pingRequest = createRequest();
 
-        Instant now = Instant.now();
-        Timestamp timestamp = Timestamp.newBuilder()
-                .setSeconds(now.getEpochSecond())
-                .setNanos(now.getNano())
-                .build();
-        PingRequest pingRequest = PingRequest.newBuilder()
-                .setRequestDate(timestamp)
-                .setMessage("ping")
-                .build();
-        logger.info("Sending request...");
+        logger.info("Sending request to receive one response...");
 
         PongResponse response = pingPongServiceBlockingStub.getResponse(pingRequest);
 
         logger.info("Client has been received a response with message: {} and timestamp: {}",
                 response.getMessage(), Instant.ofEpochSecond(response.getResponseDate().getSeconds(), response.getResponseDate().getNanos()));
+    }
+
+    public void getMultipleResponses() {
+
+        PingRequest pingRequest = createRequest();
+        logger.info("Sending request to receive multiple responses...");
+
+        Iterator<PongResponse> responses = pingPongServiceBlockingStub.getMultipleResponses(pingRequest);
+
+        while (responses.hasNext()) {
+            PongResponse response = responses.next();
+            logger.info("Client has been received a response with message: {} and timestamp: {}",
+                    response.getMessage(), Instant.ofEpochSecond(response.getResponseDate().getSeconds(), response.getResponseDate().getNanos()));
+        }
+    }
+
+    private static PingRequest createRequest() {
+        Instant now = Instant.now();
+        Timestamp timestamp = Timestamp.newBuilder()
+                .setSeconds(now.getEpochSecond())
+                .setNanos(now.getNano())
+                .build();
+        return PingRequest.newBuilder()
+                .setRequestDate(timestamp)
+                .setMessage("ping")
+                .build();
     }
 }
